@@ -59,6 +59,9 @@
               "mimeType": "video/*",
               "host": "*",
               "pathPattern": ".*\\.mp4"
+            },
+            {
+              "mimeType": "video/*"
             }
           ],
           "category": ["BROWSABLE", "DEFAULT"]
