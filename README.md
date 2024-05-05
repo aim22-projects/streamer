@@ -1,4 +1,5 @@
 # Steps to build apk file locally
+- required jdk > 17 & < 20.
 
 ## 1. Install all dependencies
 ``` shell
