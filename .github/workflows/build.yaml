@@ -15,70 +15,70 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Setup Node js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
+      # - name: Setup Node js
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: 18
 
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: 17
+      # - name: Setup Java
+      #   uses: actions/setup-java@v3
+      #   with:
+      #     distribution: 'temurin'
+      #     java-version: 17
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v2.0.10
+      # - name: Setup Android SDK
+      #   uses: android-actions/setup-android@v2.0.10
 
-      - name: Install Dependecies
-        run: npm install
+      # - name: Install Dependecies
+      #   run: npm install
 
-      - name: Create android prebuild
-        run: npx expo prebuild --platform android --clean
+      # - name: Create android prebuild
+      #   run: npx expo prebuild --platform android --clean
 
-      - name: build apk
-        run: |
-          cd android
-          ./gradlew assembleRelease
+      # - name: build apk
+      #   run: |
+      #     cd android
+      #     ./gradlew assembleRelease
       
-       - name: Release on GitHub 
-        id: create-new-release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-        with:
-          tag_name: v${{ github.run_number }} # Use a tag format appropriate for your project
+      #  - name: Release on GitHub 
+      #   id: create-new-release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+      #   with:
+      #     tag_name: v${{ github.run_number }} # Use a tag format appropriate for your project
 
-      - name: Upload assets to Github Release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with: 
-          upload_url: ${{ steps.create-new-release.outputs.upload_url}}
-          asset_path: android/app/build/outputs/apk/release/app-release.apk
-          asset_name: Streamer-${{github.run_number}}.apk
-          asset_content_type: application/apk
+      # - name: Upload assets to Github Release
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with: 
+      #     upload_url: ${{ steps.create-new-release.outputs.upload_url}}
+      #     asset_path: android/app/build/outputs/apk/release/app-release.apk
+      #     asset_name: Streamer-${{github.run_number}}.apk
+      #     asset_content_type: application/apk
 
-      - name: Create Telegram Push Messages
-        env:
-          ReleaseMessageForTelegram: |
-            "New build released!
-            Commit: ${{github.event.head_commit.message}}
-            Branch: ${{github.ref}}"
-          SendMessageUrl: https://api.telegram.org/bot${{ vars.TELEGRAM_BOT_TOKEN }}/sendMessage
-          SendDocumentUrl: https://api.telegram.org/bot${{ vars.TELEGRAM_BOT_TOKEN }}/sendDocument
-        run: echo $ReleaseMessageForTelegram
+      # - name: Create Telegram Push Messages
+      #   env:
+      #     ReleaseMessageForTelegram: |
+      #       "New build released!
+      #       Commit: ${{github.event.head_commit.message}}
+      #       Branch: ${{github.ref}}"
+      #     SendMessageUrl: https://api.telegram.org/bot${{ vars.TELEGRAM_BOT_TOKEN }}/sendMessage
+      #     SendDocumentUrl: https://api.telegram.org/bot${{ vars.TELEGRAM_BOT_TOKEN }}/sendDocument
+      #   run: echo $ReleaseMessageForTelegram
 
-      - name: Send Release Message to telegram bot
-        run: | 
-          curl --location 'https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage' \
-          --form 'chat_id="${{ secrets.TELEGRAM_BOT_PERSONAL_CHAT_ID }}"' \
-          --form 'text="New build released!
-            Commit: ${{github.event.head_commit.message}}
-            Branch: ${{github.ref}}"'
+      # - name: Send Release Message to telegram bot
+      #   run: | 
+      #     curl --location 'https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage' \
+      #     --form 'chat_id="${{ secrets.TELEGRAM_BOT_PERSONAL_CHAT_ID }}"' \
+      #     --form 'text="New build released!
+      #       Commit: ${{github.event.head_commit.message}}
+      #       Branch: ${{github.ref}}"'
 
-      - name: Send build files to telegram 
-        run: |
-          curl --location 'https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendDocument' \
-          --form 'chat_id="${{ secrets.TELEGRAM_BOT_PERSONAL_CHAT_ID }}"' \
-          --form 'document=@"android/app/build/outputs/apk/release/app-release.apk"' \
-          --form 'caption="build:${{github.run_number}}"'
+      # - name: Send build files to telegram 
+      #   run: |
+      #     curl --location 'https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendDocument' \
+      #     --form 'chat_id="${{ secrets.TELEGRAM_BOT_PERSONAL_CHAT_ID }}"' \
+      #     --form 'document=@"android/app/build/outputs/apk/release/app-release.apk"' \
+      #     --form 'caption="build:${{github.run_number}}"'
