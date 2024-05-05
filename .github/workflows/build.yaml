@@ -29,16 +29,16 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2.0.10
 
-      # - name: Install Dependecies
-      #   run: npm install
+      - name: Install Dependecies
+        run: npm install
 
-      # - name: Create android prebuild
-      #   run: npx expo prebuild --platform android --clean
+      - name: Create android prebuild
+        run: npx expo prebuild --platform android --clean
 
-      # - name: build apk
-      #   run: |
-      #     cd android
-      #     ./gradlew assembleRelease
+      - name: build apk
+        run: |
+          cd android
+          ./gradlew assembleRelease
       
       #  - name: Release on GitHub 
       #   id: create-new-release
